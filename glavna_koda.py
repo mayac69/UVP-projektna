@@ -43,8 +43,11 @@ def obdelaj_podatke ():
         'leto',
         'mesto',
         'drzava',
+        'pesem',
         'izvajalec',
         'tocke',
+        'tocke_publike',
+        'tocke_zirije',
         'startna_stevilka',
         'st_dvanajstk'
     ]

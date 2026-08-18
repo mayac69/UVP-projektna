@@ -70,30 +70,58 @@ def izluscevanje_podatkov (html_vsebina, leto):
         if len (celice) < 4:
             continue
 
-        teksti = [ciscenje_niza (celica.get_text ()) for celica in celice]
+        teksti = [ciscenje_niza (celica.get_text (separator = " ")) for celica in celice]
 
         uvrstitev = teksti [0]
 
         if uvrstitev.isdigit ():
             koncna_pozicija = int (uvrstitev)                       # 1. stolpec: uvrstitev
             drzava = teksti [1] if len (teksti) > 1 else ""         # 2. stolpec: država izvajalca
-            izvajalec = teksti [2] if len (teksti) > 2 else ""      # 3. stolpec: izvajalec pesmi
-            pts = teksti [3] if len (teksti) > 3 else ""
+
+            pesem_v_ceici = celice [2]
+            isci_a = pesem_v_ceici.find ('a')
+            if isci_a:
+                # Naslov pesmi je cel znotraj atributa <a>
+                pesem = ciscenje_niza (isci_a.get_text ())
+                # Brisanje <a>, da ostane le izvajalec
+                isci_a.extract ()
+                izvajalec = ciscenje_niza (pesem_v_ceici.get_text ())
+            else: # Če nimamo povezave
+                vrstice_pesem = [ciscenje_niza (vsebina) for vsebina in pesem_v_ceici.get_text (separator = "\n").split ("\n") if ciscenje_niza (vsebina)]
+                pesem = vrstice_pesem [0] if len (vrstice_pesem) > 0 else ""
+                izvajalec = vrstice_pesem [1] if len (vrstice_pesem) > 1 else ""      # 3. stolpec: izvajalec pesmi
+
+            pts = teksti [3].split () [0] if len (teksti) > 3 and teksti [3] else ""
             tocke = int (pts) if pts.isdigit () else None           # 4. stolpec: končno št. točk
-            startna_stevilka = None
-            if len (teksti) > 4 and teksti [4].isdigit ():          # 5. stolpec: running order pesmi
-                startna_stevilka = int (teksti [4])             
-            dvanajstke = None
-            if len (teksti) > 5 and teksti [5].isdigit ():          # 6. stolpec: kolikokrat je izvajalec prejel 12 točk
-                dvanajstke = int (teksti [5])
+
+
+            # Po letu 2016 se način točkovanja spremeni: loči se žirija od publike.
+            if leto >= 2016:
+                publika_deli = teksti [4].split () if len (teksti) > 4 else []
+                tocke_publike = int (publika_deli [0]) if publika_deli and publika_deli [0].isdigit () else None       # 5. stolpec: žirija/publika
+                zirija_deli = teksti [5].split () if len (teksti) > 5 else []
+                tocke_zirije = int (zirija_deli [0]) if zirija_deli and zirija_deli [0].isdigit () else None
+                start_deli = teksti [6].split () if len (teksti) > 6 else []                      # 6. stolpec: running order pesmi
+                startna_stevilka = int (start_deli [0]) if start_deli and start_deli [0].isdigit () else None
+                st_dvanajstk = None                                   # 7. stolpec: kolikokrat je izvajalec prejel 12 točk
+            else:
+                tocke_publike = None
+                tocke_zirije = None
+                start_deli = teksti [4].split () if len (teksti) > 4 else []                      # 5. stolpec: running order pesmi
+                startna_stevilka = int (start_deli [0]) if start_deli and start_deli [0].isdigit () else None
+                dvanajstke_deli = teksti [5].split () if len (teksti) > 5 else []
+                st_dvanajstk = int (dvanajstke_deli [0]) if dvanajstke_deli and dvanajstke_deli [0].isdigit () else None  # 6. stolpec: kolikokrat je izvajalec prejel 12 točk
 
             podatki.append ({
                 'leto': leto,
                 'mesto': koncna_pozicija,
                 'drzava': drzava,
+                'pesem': pesem,
                 'izvajalec': izvajalec,
                 'tocke': tocke,
+                'tocke_publike': tocke_publike,
+                'tocke_zirije': tocke_zirije,
                 'startna_stevilka': startna_stevilka,
-                'st_dvanajstk': dvanajstke
+                'st_dvanajstk': st_dvanajstk
             })
     return podatki
