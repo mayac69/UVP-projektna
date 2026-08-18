@@ -78,16 +78,17 @@ def izluscevanje_podatkov (html_vsebina, leto):
             koncna_pozicija = int (uvrstitev)                       # 1. stolpec: uvrstitev
             drzava = teksti [1] if len (teksti) > 1 else ""         # 2. stolpec: država izvajalca
 
-            pesem_v_ceici = celice [2]
-            isci_a = pesem_v_ceici.find ('a')
+            pesem_v_celici = celice [2]
+            isci_a = pesem_v_celici.find ('a')
             if isci_a:
-                # Naslov pesmi je cel znotraj atributa <a>
+                # Avtor pesmi
+                izvajalec_v_celici = pesem_v_celici.find ('span', class_ = 'v_artist')
+                izvajalec = ciscenje_niza (izvajalec_v_celici.get_text ())
+                # Odstrani izvajalca in dobi pesem kot preostali tekst
+                izvajalec_v_celici.extract ()
                 pesem = ciscenje_niza (isci_a.get_text ())
-                # Brisanje <a>, da ostane le izvajalec
-                isci_a.extract ()
-                izvajalec = ciscenje_niza (pesem_v_ceici.get_text ())
             else: # Če nimamo povezave
-                vrstice_pesem = [ciscenje_niza (vsebina) for vsebina in pesem_v_ceici.get_text (separator = "\n").split ("\n") if ciscenje_niza (vsebina)]
+                vrstice_pesem = [ciscenje_niza (vsebina) for vsebina in pesem_v_celici.get_text (separator = "\n").split ("\n") if ciscenje_niza (vsebina)]
                 pesem = vrstice_pesem [0] if len (vrstice_pesem) > 0 else ""
                 izvajalec = vrstice_pesem [1] if len (vrstice_pesem) > 1 else ""      # 3. stolpec: izvajalec pesmi
 
