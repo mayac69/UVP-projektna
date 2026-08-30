@@ -8,6 +8,16 @@ HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
+POPRAVKI__IMEN = {
+    "United Kingdom UK": "United Kingdom",
+    "Bosnia & Herz egovina .": "Bosnia & Herzegovina",
+    "North Macedonia N.Macedonia": "North Macedonia"
+}
+
+def popravi_ime_drzave (napacno_ime):
+    """Če je ime napačno prenešeno in obstaja popravek v slovarju, ga funkcija popravi."""
+    return POPRAVKI__IMEN.get (napacno_ime, napacno_ime)
+
 def ustvari (pot):
     """Funkcija ustvari mapo, če ta še ne obstaja."""
     os.makedirs (pot, exist_ok = True)
@@ -76,7 +86,8 @@ def izluscevanje_podatkov (html_vsebina, leto):
 
         if uvrstitev.isdigit ():
             koncna_pozicija = int (uvrstitev)                       # 1. stolpec: uvrstitev
-            drzava = teksti [1] if len (teksti) > 1 else ""         # 2. stolpec: država izvajalca
+            drzava_1 = teksti [1] if len (teksti) > 1 else ""       # 2. stolpec: država izvajalca
+            drzava = popravi_ime_drzave (drzava_1)
 
             pesem_v_celici = celice [2]
             isci_a = pesem_v_celici.find ('a')
