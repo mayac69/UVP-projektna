@@ -49,7 +49,6 @@ def obdelaj_podatke ():
         'tocke_publike',
         'tocke_zirije',
         'startna_stevilka',
-        'st_dvanajstk'
     ]
 
     pomozne_funkcije.zapisovanje_v_csv (vsi_rezultati, polja, CSV_IZHOD)

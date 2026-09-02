@@ -115,15 +115,12 @@ def izluscevanje_podatkov (html_vsebina, leto):
                 tocke_zirije = int (zirija_deli [0]) if zirija_deli and zirija_deli [0].isdigit () else None
                 start_deli = teksti [6].split () if len (teksti) > 6 else []                      # 6. stolpec: running order pesmi
                 startna_stevilka = int (start_deli [0]) if start_deli and start_deli [0].isdigit () else None
-                st_dvanajstk = None                                   # 7. stolpec: kolikokrat je izvajalec prejel 12 točk
             else:
                 tocke_publike = None
                 tocke_zirije = None
                 start_deli = teksti [4].split () if len (teksti) > 4 else []                      # 5. stolpec: running order pesmi
                 startna_stevilka = int (start_deli [0]) if start_deli and start_deli [0].isdigit () else None
-                dvanajstke_deli = teksti [5].split () if len (teksti) > 5 else []
-                st_dvanajstk = int (dvanajstke_deli [0]) if dvanajstke_deli and dvanajstke_deli [0].isdigit () else None  # 6. stolpec: kolikokrat je izvajalec prejel 12 točk
-
+                
             podatki.append ({
                 'leto': leto,
                 'mesto': koncna_pozicija,
@@ -134,6 +131,5 @@ def izluscevanje_podatkov (html_vsebina, leto):
                 'tocke_publike': tocke_publike,
                 'tocke_zirije': tocke_zirije,
                 'startna_stevilka': startna_stevilka,
-                'st_dvanajstk': st_dvanajstk
             })
     return podatki
