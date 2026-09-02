@@ -1,6 +1,7 @@
 import os
 import csv
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import time
 from bs4 import BeautifulSoup
 
@@ -23,18 +24,21 @@ def ustvari (pot):
     os.makedirs (pot, exist_ok = True)
 
 def prenos_strani (url):
-    """Funkcija prenese HTML z uporabo brskalnika Safari, da se izvede JavaScript."""
+    """Funkcija prenese HTML z uporabo brskalnika Chrome, da se izvede JavaScript."""
     try:
-        driver = webdriver.Safari ()
+        opcije = Options ()
+        opcije.add_argument ("--headless")  # Zagon funkcije v ozadju (brez okna).
+
+        driver = webdriver.Chrome (options = opcije)
         driver.get (url)
-    
+
         time.sleep (1)
-        
+
         html_vsebina = driver.page_source
         driver.quit ()
         return html_vsebina
     except Exception as e:
-        print (f"Zgodila se je napaka pri prenosu preko Safarija: {e}")
+        print (f"Zgodila se je napaka pri prenosu preko Chroma: {e}")
         return None
 
 def shranjevanje_niza (text, pot_datoteke):
